@@ -20,7 +20,7 @@ hide_st_style = """
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-st.title("⚙️ LogiStep : Industrial GRAFCET Compiler")
+st.title("LogiStep : Industrial GRAFCET Compiler")
 st.markdown("Mathematical system transformation to Siemens AWL/STL")
 
 # 3. Création de la structure asymétrique (Le faux "Glider")
