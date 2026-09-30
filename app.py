@@ -5,7 +5,10 @@ from ui.data_input import render_input_tables
 from ui.visualizer import render_graph
 from ui.export_view import render_export_section
 
-# Injection CSS pour masquer le menu, le footer et le bouton de déploiement
+# 1. CRITIQUE : set_page_config DOIT être la première instruction Streamlit
+st.set_page_config(page_title="LogiStep - GRAFCET Compiler", layout="wide", page_icon="⚙️")
+
+# 2. Injection CSS 
 hide_st_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -17,14 +20,18 @@ hide_st_style = """
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-st.set_page_config(page_title="LogiStep - GRAFCET Compiler", layout="wide", page_icon="⚙️")
 st.title("⚙️ LogiStep : Industrial GRAFCET Compiler")
 st.markdown("Mathematical system transformation to Siemens AWL/STL")
 
-# 1. Récupération des données UI
-steps_df, trans_df = render_input_tables()
+# 3. Création de la structure asymétrique (Le faux "Glider")
+# La colonne de gauche prend 30% de l'écran, celle de droite 70%
+col_gauche, col_droite = st.columns([0.3, 0.7])
 
-# 2. Construction du modèle mathématique
+with col_gauche:
+    # 4. Récupération des données UI dans la zone restreinte
+    steps_df, trans_df = render_input_tables()
+
+# 5. Construction du modèle mathématique
 system = GrafcetSystem()
 
 for _, row in steps_df.iterrows():
@@ -35,11 +42,13 @@ for _, row in trans_df.iterrows():
     if pd.notna(row['transition_id']):
         system.add_transition(str(row['transition_id']), str(row['from_step']), str(row['to_step']), str(row['condition']))
 
-# 3. Affichage structuré
-col1, col2 = st.columns(2)
-
-with col1:
-    render_graph(system)
-
-with col2:
-    render_export_section(system)
+# 6. Affichage structuré du Graphe et du Code
+with col_droite:
+    # On divise la partie droite (70%) en deux colonnes égales pour le visuel
+    col_visuel, col_code = st.columns(2)
+    
+    with col_visuel:
+        render_graph(system)
+        
+    with col_code:
+        render_export_section(system)
