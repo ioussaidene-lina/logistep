@@ -47,7 +47,7 @@ class AWLTranslator:
                         
                     awl_code.append(f"      A     \"{t.from_step}\"")
                     
-                    condition_string = t.condition
+                    condition_string = t.condition 
                     if " OR " in condition_string:
                         sub_conditions = [c.strip() for c in condition_string.split(" OR ")]
                         awl_code.append(f"      A(")
